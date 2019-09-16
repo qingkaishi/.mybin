@@ -53,8 +53,14 @@ do
     set -- $a
     sample=$((${@%.*}))
     let peak="sample > peak ? sample : peak"
-    echo $sample>>cpu.log
+    if [ $sample -ne 0 ]; then
+        echo $sample>>cpu.log
+    fi
     sleep 1
+
+    if ! kill -0 $pgid > /dev/null 2>&1; then
+	break
+    fi
 done
 echo "cpu usage: peak=$peak" >&2
 ) &
